@@ -2,7 +2,7 @@
 
 ## Two ways to set up the container
 
-### Pull the image from Docker Hub
+### 1. Pull the image from Docker Hub
 This is the base build that runs JupyterHub and Jupyter Notebooks with Python 2 and 3 kernels. To use this base build for building the docker images that has additional kernels in this repository do a:
 
 <code>
@@ -11,7 +11,7 @@ $ docker pull hermantolentino/jupyterhub:latest
 
 This will download the base build which you can use to run Python 2 and 3 notebooks.
 
-### Build it from the Dockerfile
+### 2. Build it from the Dockerfile
 
 Follow these steps if you want to build the container from the Dockerfile.
 1. On the command line: <code>$ git clone</code> this repository.
