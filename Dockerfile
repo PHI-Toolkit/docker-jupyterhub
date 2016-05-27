@@ -7,18 +7,13 @@ USER root
 # Install all OS dependencies for fully functional notebook server
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -yq --no-install-recommends \
-    git nano \
-    wget \
-    build-essential \
-    python-dev \
+    git nano wget \
+    build-essential python-dev \
     ca-certificates \
-    bzip2 \
-    unzip \
+    bzip2 unzip \
     libsm6 \
-    texlive-latex-base \
-    texlive-latex-extra \
-    texlive-fonts-extra \
-    texlive-fonts-recommended \
+    texlive-latex-base texlive-latex-extra \
+    texlive-fonts-extra texlive-fonts-recommended \
     texlive-generic-recommended \
     sudo \
     locales \
@@ -29,6 +24,10 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
+
+RUN apt-get update
+RUN apt-get install -y language-pack-en-base
+RUN dpkg-reconfigure locales
 
 # Configure environment
 ENV CONDA_DIR /opt/conda
@@ -48,7 +47,7 @@ RUN mkdir -p /etc/pki/tls/certs/ && \
 COPY Anaconda3-4.0.0-Linux-x86_64.sh /tmp/
 RUN cd /tmp && \
     /bin/bash Anaconda3-4.0.0-Linux-x86_64.sh -b -p /opt/conda && \
-    $CONDA_DIR/bin/conda install --quiet --yes conda==3.19.1 && \
+    $CONDA_DIR/bin/conda install --quiet --yes conda && \
     $CONDA_DIR/bin/conda config --system --add channels conda-forge && \
     conda clean -tipsy
 
@@ -70,13 +69,36 @@ RUN conda install --quiet --yes \
     terminado \
     && conda clean -tipsy
 
+# Add Tini
+ENV TINI_VERSION v0.9.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc /tini.asc
+RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 0527A9B7 && \
+    gpg --verify /tini.asc
+RUN chmod +x /tini
+
 # Install JupyterHub: https://github.com/jupyterhub/jupyterhub
 # JupyterHub is a multi-user server for Jupyter
 
+# configure virtual environments
+RUN ln -snf /bin/bash /bin/sh
+RUN pip install virtualenv && \
+    pip3 install virtualenv
+
+RUN virtualenv -p /usr/bin/python2 venv27 && \
+    source venv27/bin/activate && \
+    pip install notebook ipykernel requests && \
+    ipython kernelspec install-self && \
+    deactivate
+
+RUN virtualenv -p /usr/bin/python3 venv35 && \
+    source venv35/bin/activate && \
+    pip3 install notebook ipykernel requests && \
+    ipython3 kernelspec install-self && \
+    deactivate
+
 RUN conda install --yes anaconda
-RUN conda create -n py27 python --yes && \
-    conda create -n py35 python --yes && \
-    npm install -g configurable-http-proxy && \
+RUN npm install -g configurable-http-proxy && \
     pip3 install jupyterhub && \
     pip3 install jupyter && \
     mkdir -p /etc/jupyterhub && \
@@ -103,13 +125,6 @@ EXPOSE 8000
 
 WORKDIR /root/work
 
-# Add Tini
-ENV TINI_VERSION v0.9.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc /tini.asc
-RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 0527A9B7 && \
-    gpg --verify /tini.asc
-RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 
-CMD ["/opt/conda/bin/jupyter", "notebook", "--ip=0.0.0.0", "--port=8888:8888", "--no-browser" "--notebook-dir='/root/work'", "&"]
+CMD ["/bin/bash"]
