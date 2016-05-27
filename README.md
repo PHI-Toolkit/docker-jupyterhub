@@ -1,5 +1,7 @@
 # docker-jupyterhub
 
+Note: This JupyterHub and Jupyter Notebook package was built without Anaconda.
+
 ## Two ways to set up the container
 
 ### 1. Pull the image from Docker Hub
@@ -16,8 +18,7 @@ This will download the base build which you can use to run Python 2 and 3 notebo
 Follow these steps if you want to build the container from the Dockerfile.
 
 1. On the command line: <code>$ git clone</code> this repository.
-2. Download Anaconda from Continuum Analytics and place the file in the same folder as this Dockerfile.
-3. Run this code on the command line: <code>$ docker build -t epispider/jupyterhub .</code> Remember the period. This will take a while.
+3. Run this code on the command line: <code>$ docker build -t hermantolentino/jupyterhub:v3 .</code> Remember the period. This will take a while.
 
 ## Running the container
 
