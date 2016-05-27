@@ -23,6 +23,7 @@ Follow these steps if you want to build the container from the Dockerfile.
 
 1. Run the docker image: <code>$ docker run -it -p 0.0.0.0:8000:8000 <DOCKER IMAGE ID> /bin/bash</code>. You can obtain the DOCKER IMAGE ID by <code>$ docker images</code>. This will bring you to the docker container root prompt: <code>root@<DOCKER IMAGE ID>:~/work#</code>. At the root prompt type: <code># bash startjupyterhub.sh</code>. This will start your JupyterHub server.
 2. Open a browser and type in <code>https://localhost:8000/</code>. On the Mac, you may have to substitute "localhost" with the docker machine IP address. The SSL certificates are self-signed so you will get a browser warning about the site being insecure. 
+3. Find the username and password for JupyterHub inside the Dockerfile. You can create another user by logging in to the bash prompt of the container and using <code># adduser <username></code>.
 
 ## Notes
 
