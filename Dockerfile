@@ -30,8 +30,8 @@ RUN apt-get install -y language-pack-en-base
 RUN dpkg-reconfigure locales
 
 # Configure environment
-ENV CONDA_DIR /opt/conda
-ENV PATH $CONDA_DIR/bin:$PATH
+#ENV CONDA_DIR /opt/conda
+#ENV PATH $CONDA_DIR/bin:$PATH
 ENV SHELL /bin/bash
 ENV NB_USER jupyter
 ENV NB_UID 1000
@@ -44,12 +44,12 @@ RUN mkdir -p /etc/pki/tls/certs/ && \
     ln -s /etc/ssl/certs/ca-certificates.crt /etc/pki/tls/certs/ca-bundle.crt
 
 # Download Anaconda and place it in the same directory as this Dockerfile
-COPY Anaconda3-4.0.0-Linux-x86_64.sh /tmp/
-RUN cd /tmp && \
-    /bin/bash Anaconda3-4.0.0-Linux-x86_64.sh -b -p /opt/conda && \
-    $CONDA_DIR/bin/conda install --quiet --yes conda && \
-    $CONDA_DIR/bin/conda config --system --add channels conda-forge && \
-    conda clean -tipsy
+#COPY Anaconda3-4.0.0-Linux-x86_64.sh /tmp/
+#RUN cd /tmp && \
+#    /bin/bash Anaconda3-4.0.0-Linux-x86_64.sh -b -p /opt/conda && \
+#    $CONDA_DIR/bin/conda install --quiet --yes conda && \
+#    $CONDA_DIR/bin/conda config --system --add channels conda-forge && \
+#    conda clean -tipsy
 
 RUN apt-get update -y
 RUN apt-get install -y python-dev python3-dev npm python-pip python3-pip nodejs-legacy
@@ -64,10 +64,10 @@ RUN openssl req -new -key server.key -out server.csr \
 RUN cp server.crt /etc/ssl/certs/ && \
     cp server.key /etc/ssl/certs/
 
-RUN conda install --quiet --yes \
+#RUN conda install --quiet --yes \
 #    'notebook=4.2*' \
-    terminado \
-    && conda clean -tipsy
+#    terminado \
+#    && conda clean -tipsy
 
 # Add Tini
 ENV TINI_VERSION v0.9.0
@@ -87,17 +87,17 @@ RUN pip install virtualenv && \
 
 RUN virtualenv -p /usr/bin/python2 venv27 && \
     source venv27/bin/activate && \
-    pip install notebook ipykernel requests && \
+    pip install notebook ipykernel requests terminado && \
     ipython kernelspec install-self && \
     deactivate
 
 RUN virtualenv -p /usr/bin/python3 venv35 && \
     source venv35/bin/activate && \
-    pip3 install notebook ipykernel requests && \
+    pip3 install notebook ipykernel requests terminado && \
     ipython3 kernelspec install-self && \
     deactivate
 
-RUN conda install --yes anaconda
+#RUN conda install --yes anaconda
 RUN npm install -g configurable-http-proxy && \
     pip3 install jupyterhub && \
     pip3 install jupyter && \
@@ -108,13 +108,48 @@ COPY startjupyterhub.sh /root/work
 
 RUN mkdir -p /var/log/jupyterhub
 RUN touch /var/log/jupyterhub/jupyterhub.log
-RUN echo "PATH=/opt/conda/bin:/opt/conda:$PATH" >> /etc/environment
+#RUN echo "PATH=/opt/conda/bin:/opt/conda:$PATH" >> /etc/environment
+
+## Install R
+RUN mkdir -p /usr/local/lib/R/site-library && \
+    chmod -R 777 /usr/local/lib/R/site-library
+
+RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu trusty/' >> /etc/apt/sources.list && \
+    echo "options(repos = c(CRAN = 'http://cran.us.r-project.org'))" > /etc/Rprofile.site
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+RUN apt-get update -y && \
+    apt-get install -y r-base r-base-dev r-base-core
+
+RUN apt-get update && \
+    apt-get -y build-dep libcurl4-gnutls-dev && \
+    apt-get -y install libcurl4-gnutls-dev libzmq3-dev
+
+RUN R -e "install.packages('RCurl', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('curl', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('httr', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('devtools', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('repr', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('base64enc', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('evaluate', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('uuid', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages(c('rzmq', 'IRkernel','IRdisplay'), repos = 'http://irkernel.github.io/', type = 'source')" && \
+    R -e "IRkernel::installspec(user=FALSE)"
 
 # This is a default user you can use to log in to JupyterHub
 # You can create your own account by entering the bash shell and creating your own user account or
 #   change "jupyterhub" and "Password1" below.
+# User 'jupyterhub' is also a passwordless sudo user
+
 RUN adduser --gecos "" jupyterhub && \
     echo jupyterhub:Password1 | chpasswd
+RUN echo "jupyterhub ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Copy Python and R notebooks to check versions
+RUN chmod -R 770 /home/jupyterhub
+COPY Python2-version.ipynb /home/jupyterhub
+COPY Python3-version.ipynb /home/jupyterhub
+COPY R-version.ipynb /home/jupyterhub
 
 # Expose ports
 EXPOSE 8888
@@ -127,4 +162,4 @@ WORKDIR /root/work
 
 ENTRYPOINT ["/tini", "--"]
 
-CMD ["/bin/bash"]
+CMD ["/bin/bash /root/work/startjupyterhub.sh"]
