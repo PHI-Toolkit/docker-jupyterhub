@@ -14,4 +14,8 @@ This will download the base build which you can use to run Python 2 and 3 notebo
 2. Download Anaconda from Continuum Analytics and place the file in the same folder as this Dockerfile.
 3. Run this code on the command line: <code>$ docker build -t epispider/jupyterhub .</code> Remember the period. This will take a while.
 4. Run the docker image: <code>$ docker run -it -p 0.0.0.0:8000:8000 <DOCKER IMAGE ID> /bin/bash</code>. You can obtain the DOCKER IMAGE ID by <code>$ docker images</code>. This will bring you to the docker container root prompt: <code>root@<DOCKER IMAGE ID>:~/work#</code>. At the root prompt type: <code># bash startjupyterhub.sh</code>. This will start your JupyterHub server.
-5. Open a browser and type in <code>http://localhost:8000/</code>. On the Mac, you may have to substitute "localhost" with the docker machine IP address.
+5. Open a browser and type in <code>https://localhost:8000/</code>. On the Mac, you may have to substitute "localhost" with the docker machine IP address. The SSL certificates are self-signed so you will get a browser warning about the site being insecure. 
+
+## Notes
+
+1. The JupyterHub configuration file at <code>/etc/jupyterhub/jupyterhub_config.py</code> has an insecure configuration. Please read the docs to create a secure configuration for your JupyterHub server.
