@@ -1,5 +1,8 @@
 # docker-jupyterhub
 
+## Two ways to set up the container
+
+### Pull the image from Docker Hub
 This is the base build that runs JupyterHub and Jupyter Notebooks with Python 2 and 3 kernels. To use this base build for building the docker images that has additional kernels in this repository do a:
 
 <code>
@@ -8,8 +11,9 @@ $ docker pull hermantolentino/jupyterhub:latest
 
 This will download the base build which you can use to run Python 2 and 3 notebooks.
 
-## Steps to use this Dockerfile
+### Build it from the Dockerfile
 
+Follow these steps if you want to build the container from the Dockerfile.
 1. On the command line: <code>$ git clone</code> this repository.
 2. Download Anaconda from Continuum Analytics and place the file in the same folder as this Dockerfile.
 3. Run this code on the command line: <code>$ docker build -t epispider/jupyterhub .</code> Remember the period. This will take a while.
