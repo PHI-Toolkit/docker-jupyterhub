@@ -1,5 +1,3 @@
-# docker-jupyterhub
-
 Note: This JupyterHub and Jupyter Notebook package was built without Anaconda.
 
 ## Two ways to set up the container
@@ -23,12 +21,12 @@ Follow these steps if you want to build the container from the Dockerfile.
 
 ## Running the container
 
-1. Run the docker image: <code>$ docker run -v $(pwd):/home/jupyter -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash</code>. <code>$(pwd) substitutes your current directory in the commend</code>. <code>-v</code> creates a shared volume that enables you to access this current host directory inside the container. This will bring you to the docker container root prompt: <code>root@<DOCKER IMAGE ID>:~/work#</code>. 
+1. Run the docker image: <code>$ docker run -v $(pwd):/home/jupyter -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash</code>. <code>$(pwd) substitutes your current directory in the commend</code>. <code>-v</code> creates a shared volume that enables you to access this current host directory inside the container. This will bring you to the docker container root prompt: <code>root@<DOCKER IMAGE ID>:~/work#</code>.
 2. Load the R and Python packages by typing at the command line: <code>$ ./installpackages.sh</code> . This will take a while again. If there are any errors, please let me know.
 3. After loading the packages, you are now ready to launch JupyterHub. At the root prompt type: <code># bash startjupyterhub.sh</code>. This will start your JupyterHub server.
-4. Open a browser and type in <code>https://localhost:8000/</code>. On the Mac, you may have to substitute "localhost" with the docker machine IP address. The SSL certificates are self-signed so you will get a browser warning about the site being insecure. 
+4. Open a browser and type in <code>https://localhost:8000/</code>. On the Mac, you may have to substitute "localhost" with the docker machine IP address. The SSL certificates are self-signed so you will get a browser warning about the site being insecure.
 5. Find the username and password for JupyterHub inside the Dockerfile. You can create another user by logging in to the bash prompt of the container and using <code># adduser <username></code>.
-6. Click on the packages directory and run the notebooks (files ending in *.ipynb) to check the versions of the loaded kernels.
+6. Click on the packages directory and run the notebooks (files ending in .ipynb) to check the versions of the loaded kernels.
 
 Enjoy!
 

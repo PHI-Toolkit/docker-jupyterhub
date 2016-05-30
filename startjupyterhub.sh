@@ -1,2 +1,3 @@
+#!/bin/bash
 # comment
-nohup jupyterhub --port 8000 --ssl-key /etc/ssl/certs/server.key --ssl-cert /etc/ssl/certs/server.crt &
+jupyterhub --port 8000 --ssl-key /etc/ssl/certs/server.key --ssl-cert /etc/ssl/certs/server.crt
