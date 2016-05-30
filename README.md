@@ -1,15 +1,17 @@
+# docker-jupyterhub
+
 Note: This JupyterHub and Jupyter Notebook package was built without Anaconda.
 
 ## Two ways to set up the container
 
 ### 1. Pull the image from Docker Hub
-This is the base build that runs JupyterHub and Jupyter Notebooks with Python 2 and 3 and R kernels. To use this base build for building the docker images that has additional kernels in this repository do a:
+This is the base build that runs JupyterHub and Jupyter Notebooks with Python 2 and 3 and R 3.3.0 and Scala 2.11 kernels. To use this base build for building docker images that have additional kernels in this repository do a:
 
 <code>
 $ docker pull hermantolentino/jupyterhub:latest
 </code>
 
-This will download the base build which you can use to run Python 2 and 3 notebooks.
+This will download the base build which you can use to run Python 2 and 3, R and Scala notebooks.
 
 ### 2. Build it from the Dockerfile
 
@@ -21,15 +23,26 @@ Follow these steps if you want to build the container from the Dockerfile.
 
 ## Running the container
 
-1. Run the docker image: <code>$ docker run -v $(pwd):/home/jupyter -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash</code>. <code>$(pwd) substitutes your current directory in the commend</code>. <code>-v</code> creates a shared volume that enables you to access this current host directory inside the container. This will bring you to the docker container root prompt: <code>root@<DOCKER IMAGE ID>:~/work#</code>.
-2. Load the R and Python packages by typing at the command line: <code>$ ./installpackages.sh</code> . This will take a while again. If there are any errors, please let me know.
+1. Run the docker image: <code>$ docker run -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash</code>. <code>$(pwd) substitutes your current directory in the commend</code>. <code>-v</code> creates a shared volume that enables you to access this current host directory inside the container. This will bring you to the docker container root prompt: <code>root@<DOCKER IMAGE ID>:/home/jupyterhub#</code>.
+2. Load the R and Python data science packages by typing at the command line: <code># ./installpackages.sh</code> . This will take a while again, have some coffee. If there are any errors, please let me know.
 3. After loading the packages, you are now ready to launch JupyterHub. At the root prompt type: <code># bash startjupyterhub.sh</code>. This will start your JupyterHub server.
 4. Open a browser and type in <code>https://localhost:8000/</code>. On the Mac, you may have to substitute "localhost" with the docker machine IP address. The SSL certificates are self-signed so you will get a browser warning about the site being insecure.
 5. Find the username and password for JupyterHub inside the Dockerfile. You can create another user by logging in to the bash prompt of the container and using <code># adduser <username></code>.
-6. Click on the packages directory and run the notebooks (files ending in .ipynb) to check the versions of the loaded kernels.
+
+## Setting up packages and run version test notebooks
+1. To test if the kernels load correctly, you need to load and run the notebooks in the <code>notebooks</code> directory from the Jupyter Notebook web interface. Click on each notebook (ends with .ipynb) and press the "run code" button. If the kernels are loaded correctly, you will see the version number of the kernel that runs each notebook.
+2. To load the data science packages in the <code>packages</code> directory, you need to SSH or login to a container bash shell other than the one you ran JupyterHub from. Type <code>$ docker exec -it <CONTAINER ID or CONTAINER alias> /bin/bash</code> to do this.
+3. Type <code>./installpackages.sh</code>. This will run the scripts for R and Python.
+
+## Stopping the container
+
+1. To test notebooks and install dIf you wish to SSH or login to a container bash shell other than the one you ran JupyterHub from, type <code>$ docker exec -it <CONTAINER ID or CONTAINER alias> /bin/bash</code>.
+2. You can stop jupyterhub by pressing <code>^C</code> twice, this will bring you back to the root prompt.
+3. Remember, when you delete the JupyterHub container with <code>docker rmi "CONTAINER ID"</code> all the packages you have installed will be gone. You can do a <code>docker commit</code> to do that.
 
 Enjoy!
 
 ## Notes
 
 1. The JupyterHub configuration file at <code>/etc/jupyterhub/jupyterhub_config.py</code> has an insecure configuration. Please read the docs to create a secure configuration for your JupyterHub server.
+2. If you want to run JupyterHub from a folder on your computer that has notebooks, <code> cd </code> to that folder and use: <code>$ docker run -v $(pwd):/home/jupyterhub -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash</code>. This will substitute your notebook folder for the default container folder <code>/home/jupyterhub</code>.
