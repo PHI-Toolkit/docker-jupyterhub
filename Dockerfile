@@ -143,6 +143,7 @@ RUN /root/.local/share/jupyter/kernels/scala211/launcher.jar --global
 
 # Backup local files to container image
 COPY etc/* /root/work/.backup/
+COPY etc/* /etc/
 COPY packages/* /root/work/.backup/
 COPY notebooks/* /root/work/.backup/
 RUN mkdir -p /home/$NB_USER/packages
