@@ -36,11 +36,9 @@ Follow these steps if you want to build the container from the Dockerfile.
 
 ## Stopping the container
 
-1. To test notebooks and install dIf you wish to SSH or login to a container bash shell other than the one you ran JupyterHub from, type <code>$ docker exec -it <CONTAINER ID or CONTAINER alias> /bin/bash</code>.
+1. To test notebooks and install the data science packages you need to SSH or login to a container bash shell other than the one you ran JupyterHub from. To do this, type <code>$ docker exec -it <CONTAINER ID or CONTAINER alias> /bin/bash</code>.
 2. You can stop jupyterhub by pressing <code>^C</code> twice, this will bring you back to the root prompt.
 3. Remember, when you delete the JupyterHub container with <code>docker rmi "CONTAINER ID"</code> all the packages you have installed will be gone. You can do a <code>docker commit</code> to do that.
-
-Enjoy!
 
 ## Notes
 
