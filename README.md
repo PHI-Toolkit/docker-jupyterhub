@@ -32,7 +32,8 @@ Follow these steps if you want to build the container from the Dockerfile.
 ## Setting up packages and run version test notebooks
 1. To test if the kernels load correctly, you need to load and run the notebooks in the <code>notebooks</code> directory from the Jupyter Notebook web interface. Click on each notebook (ends with .ipynb) and press the "run code" button. If the kernels are loaded correctly, you will see the version number of the kernel that runs each notebook.
 2. To load the data science packages in the <code>packages</code> directory, you need to SSH or login to a container bash shell other than the one you ran JupyterHub from. Type <code>$ docker exec -it <CONTAINER ID or CONTAINER alias> /bin/bash</code> to do this.
-3. Type <code>./installpackages.sh</code>. This will run the scripts for R and Python.
+3. To load all the packages for R and Python, type <code>./installpackages.sh</code>. This will run the scripts for R and Python. Warning: This really takes a long time!
+4. If you want to load packages in batches, run the following scripts one after the other: <code>$ packages/r-packages.sh</code>, <code>$ packages/python-packages.sh</code>, and <code>$ packages/download_nltk-data.sh</code>. An option for the third package, which installs NLTK data is to load them as needed at run time (in the notebook) using nltk.download('ID of data set'). The complete set (and the <code>ID</code> you need to use) of NLTK data can be found here: http://www.nltk.org/nltk_data/.
 
 ## Stopping the container
 
