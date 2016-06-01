@@ -5,7 +5,7 @@ apt-get install -y libhdf5-serial-dev libfreetype6-dev
 
 source /venv27/bin/activate
 pip install numpy pandas scipy scikit-learn h5py
-pip install statsmodels pybrain && \
+pip install statsmodels pybrain 
 pip install bokeh plotly
 pip install matplotlib
 pip install csvkit tables
