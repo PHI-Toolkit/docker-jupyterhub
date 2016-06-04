@@ -23,15 +23,25 @@ Follow these steps if you want to build the container from the Dockerfile.
 
 ## Running the container
 
-1. Run the docker image: `$ docker run -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash`. `$(pwd)` substitutes your current directory in the command. `-v` creates a shared volume that enables you to access this current host directory inside the container. This will bring you to the docker container root prompt: `root@"DOCKER IMAGE ID":/home/jupyterhub#`.
-2. Load the R and Python data science packages by typing at the command line: `# ./installpackages.sh` . This will take a while again, have some coffee. If there are any errors, please let me know.
-3. After loading the packages, you are now ready to launch JupyterHub. At the root prompt type: `# bash startjupyterhub.sh`. This will start your JupyterHub server.
-4. Open a browser and type in `https://localhost:8000/`. On the Mac, you may have to substitute "localhost" with the docker machine IP address. The SSL certificates are self-signed so you will get a browser warning about the site being insecure.
-5. Find the username and password for JupyterHub inside the Dockerfile. You can create another user by logging in to the bash prompt of the container and using `# adduser "username"`.
+1. There are two ways to run the docker image:
+
+ 1.1 **Self-contained mode**: Docker container has no access to any host drive. Run `$ docker run -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash`.
+
+ 1.2 **Using current host directory as work directory**: Run `$ docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash``$(pwd)` substitutes your current directory in the command. `-v` creates a shared volume that enables you to access your current host directory (from where you launch the docker container) inside the container.
+
+2. This will bring you to the docker container root prompt: `root@"DOCKER IMAGE ID":/home/jupyterhub/#`. In mode 1.1 above when you `cd` to `hostdir` you will enter a blank directory. In mode 1.2 above, you will find the files present in the current host directory from where you launched the container.
+
+3. Next, load the R and Python data science packages - See "Setting up packages" below. This will take a while again, have some coffee. If there are any errors, please let me know.
+
+4. After loading the packages, you are now ready to launch JupyterHub. At the root prompt type: `# bash startjupyterhub.sh`. This will start your JupyterHub server.
+
+5. Open a browser and type in `https://localhost:8000/`. On the Mac, you may have to substitute "localhost" with the docker machine IP address. The SSL certificates for `https` are self-signed so you will get a browser warning about the site being insecure.
+
+6. Find the username and password for JupyterHub inside the Dockerfile. You can create another user by logging in to the bash prompt of the container and using `# adduser "username"`.
 
 ## Setting up packages and run version test notebooks
 1. To test if the kernels load correctly, you need to load and run the notebooks in the `notebooks` directory from the Jupyter Notebook web interface. Click on each notebook (ends with .ipynb) and press the "run code" button. If the kernels are loaded correctly, you will see the version number of the kernel that runs each notebook.
-2. To load the data science packages in the `packages` directory, you need to SSH or login to a container bash shell other than the one you ran JupyterHub from. Type ``$ docker exec -it "CONTAINER ID or CONTAINER alias" /bin/bash` to do this.
+2. To load the R and Python data science packages in the `packages` directory, you need to SSH or login to a container bash shell other than the one you ran JupyterHub from. Type ``$ docker exec -it "CONTAINER ID or CONTAINER alias" /bin/bash` to do this.
 3. Once in the container root prompt, to load all the packages for R and Python, at the root prompt, type `# ./installpackages.sh`. This will run the scripts for R and Python. **Warning: This really takes a long time!**
 4. If you want to load packages in batches, run the following scripts one after the other, at the root prompt: `# packages/r-packages.sh`, `# packages/python-packages.sh`, and `# packages/python-nlp-packages.sh`. Installing additional packages take time:
 
