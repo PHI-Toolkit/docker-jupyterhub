@@ -33,7 +33,17 @@ Follow these steps if you want to build the container from the Dockerfile.
 1. To test if the kernels load correctly, you need to load and run the notebooks in the `notebooks` directory from the Jupyter Notebook web interface. Click on each notebook (ends with .ipynb) and press the "run code" button. If the kernels are loaded correctly, you will see the version number of the kernel that runs each notebook.
 2. To load the data science packages in the `packages` directory, you need to SSH or login to a container bash shell other than the one you ran JupyterHub from. Type ``$ docker exec -it "CONTAINER ID or CONTAINER alias" /bin/bash` to do this.
 3. Once in the container root prompt, to load all the packages for R and Python, at the root prompt, type `# ./installpackages.sh`. This will run the scripts for R and Python. **Warning: This really takes a long time!**
-4. If you want to load packages in batches, run the following scripts one after the other, at the root prompt: `# packages/r-packages.sh`, `# packages/python-packages.sh`, and `# packages/download_nltk-data.sh`. An option for the third package, which installs NLTK data is to load them as needed at run time (in the notebook) using nltk.download('ID of data set'). The complete set of NLTK data, and the `ID` you need to use for each set, is found here: http://www.nltk.org/nltk_data/.
+4. If you want to load packages in batches, run the following scripts one after the other, at the root prompt: `# packages/r-packages.sh`, `# packages/python-packages.sh`, and `# packages/python-nlp-packages.sh`. Installing additional packages take time:
+
+ 4.1 **NLTK**: Install NLTK and NLTK data. This takes a long while so one option is to load them as needed at run time (in the notebook) using nltk.download('ID of data set'). The complete set of NLTK data, and the `ID` you need to use for each set, is found here: http://www.nltk.org/nltk_data/.
+
+ 4.2 **GIS**: Install the Python GIS package.
+
+ 4.3 **NLP**: Install the Python NLP package.
+
+## Installed notebooks
+
+This container has a `notebooks` directory where there are sample notebooks installed and ready to run. Some of the notebooks would require packages that you might have not been installed yet, e.g., the GIS package and you will see an error that says a module is not installed.
 
 ## Stopping the container
 
