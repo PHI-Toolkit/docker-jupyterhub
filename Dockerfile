@@ -152,6 +152,7 @@ RUN mkdir -p /root/work/.backup/notebooks
 COPY notebooks/ /root/work/.backup/notebooks/
 RUN mkdir -p /home/$NB_USER/packages
 RUN mkdir -p /home/$NB_USER/notebooks
+RUN mkdir -p /home/$NB_USER/hostdir
 COPY packages/ /home/$NB_USER/packages/
 COPY notebooks/ /home/$NB_USER/notebooks/
 COPY nbextensions/ /home/$NB_USER/nbextensions/
@@ -167,11 +168,13 @@ RUN chmod a+x /home/$NB_USER/packages/*.sh
 
 # Install Python and R packages
 RUN bash /home/jupyterhub/packages/python-packages.sh
-RUN bash /home/jupyterhub/packages/python-gis-packages.sh
+#RUN bash /home/jupyterhub/packages/python-gis-packages.sh
+#RUN bash /home/jupyterhub/packages/python-nlp-packages.sh
 RUN bash /home/jupyterhub/packages/r-packages.sh
 RUN bash /home/jupyterhub/nbextensions/nbextensions-packages.sh
 
 WORKDIR /home/$NB_USER
+VOLUME /home/$NB_USER/hostdir
 
 # Expose ports
 EXPOSE 8888
