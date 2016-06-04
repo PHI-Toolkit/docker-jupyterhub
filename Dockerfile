@@ -98,7 +98,7 @@ RUN npm install -g configurable-http-proxy && \
     pip3 install jupyter && \
     mkdir -p /etc/jupyterhub && \
     mkdir -p /root/work
-COPY jupyterhub_config.py /etc/jupyterhub
+COPY etc/jupyterhub_config.py /etc/jupyterhub/
 COPY startjupyterhub.sh /root/work
 COPY stopjupyterhub.sh /root/work
 
@@ -118,7 +118,7 @@ RUN apt-get update -y && \
 
 RUN apt-get update && \
     apt-get -y build-dep libcurl4-gnutls-dev && \
-    apt-get -y install libcurl4-gnutls-dev libzmq3-dev r-cran-rjava r-cran-rodbc curl
+    apt-get -y install libcurl4-gnutls-dev libzmq3-dev r-cran-rjava r-cran-rodbc curl swig sqlite3
 
 RUN R -e "install.packages('RCurl', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('curl', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
@@ -139,17 +139,22 @@ RUN curl -L -o jupyter-scala https://git.io/vrHhi && \
     chmod +x jupyter-scala && \
     ./jupyter-scala && \
     rm -f jupyter-scala
-RUN /root/.local/share/jupyter/kernels/scala211/launcher.jar --global
+RUN /root/.local/share/jupyter/kernels/scala211/launcher.jar --global --quiet
 
 # Backup local files to container image
-COPY etc/* /root/work/.backup/
-COPY etc/* /etc/
-COPY packages/* /root/work/.backup/
-COPY notebooks/* /root/work/.backup/
+COPY etc/ /root/work/.backup/
+COPY etc/ /etc/
+RUN mkdir -p /root/work/.backup/nbextensions
+COPY nbextensions/ /root/work/.backup/nbextensions/
+RUN mkdir -p /root/work/.backup/packages
+COPY packages/ /root/work/.backup/packages/
+RUN mkdir -p /root/work/.backup/notebooks
+COPY notebooks/ /root/work/.backup/notebooks/
 RUN mkdir -p /home/$NB_USER/packages
 RUN mkdir -p /home/$NB_USER/notebooks
-COPY packages/* /home/$NB_USER/packages/
-COPY notebooks/*.ipynb /home/$NB_USER/notebooks/
+COPY packages/ /home/$NB_USER/packages/
+COPY notebooks/ /home/$NB_USER/notebooks/
+COPY nbextensions/ /home/$NB_USER/nbextensions/
 COPY Dockerfile /root/work/.backup
 COPY README.md /root/work/.backup
 COPY *.sh /root/work/.backup/
@@ -159,6 +164,12 @@ RUN chmod a+w -R /root/work
 RUN chmod a+w -R /home/$NB_USER
 RUN chmod a+x /home/$NB_USER/*.sh
 RUN chmod a+x /home/$NB_USER/packages/*.sh
+
+# Install Python and R packages
+RUN bash /home/jupyterhub/packages/python-packages.sh
+RUN bash /home/jupyterhub/packages/python-gis-packages.sh
+RUN bash /home/jupyterhub/packages/r-packages.sh
+RUN bash /home/jupyterhub/nbextensions/nbextensions-packages.sh
 
 WORKDIR /home/$NB_USER
 
