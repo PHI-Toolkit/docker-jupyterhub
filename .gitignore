@@ -1,0 +1,12 @@
+jupyter_notebook_config.json
+jupyterhub.sqlite
+jupyterhub_cookie_secret
+jupyterhub_config.py.bak
+.cache
+.configx
+.ipython
+.jupyter
+.local
+.ipynb_checkpoints
+.plotly
+.DS_Store
