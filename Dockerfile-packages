@@ -1,8 +1,12 @@
-# jupyterhub-packages: JupyterHub with Packages
-# Install JupyterHub: https://github.com/jupyterhub/jupyterhub
-# JupyterHub is a multi-user server for Jupyter
-# This installation does not use Anaconda.
-
+#
+#   jupyterhub-packages: JupyterHub with R and Python Data Science Packages
+#   Run this package if you want to build jupyterhub with R and Python data science packages. It is
+#     a big container and takes a while to build. To build this container, use the
+#     hermantolentino/jupyterhub:v5 host directory as the context but use "Dockerfile-packages" (this file)
+#     as the Dockerfile specification:
+#
+#     $ docker build -t hermantolentino/jupyter-packages:v1 -f Dockerfile-packages .
+#
 FROM ubuntu:wily
 
 MAINTAINER herman.tolentino@gmail.com

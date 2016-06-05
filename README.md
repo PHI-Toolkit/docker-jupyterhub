@@ -1,17 +1,17 @@
 # docker-jupyterhub
 
-Note: This JupyterHub and Jupyter Notebook package was built without Anaconda.
+Note: This JupyterHub and Jupyter Notebook package was built without Anaconda. Source code is available at https://github.com/hermantolentino/docker-jupyterhub.
 
 ## Two ways to set up the container
 
 ### 1. Pull the image from Docker Hub
 This is the base build that runs JupyterHub and Jupyter Notebooks with Python 2 and 3 and R 3.3.0 and Scala 2.11 kernels. Check the "Build Details" link on the Docker page to see if there is any new base build on queue. To use this base build for building docker images that have additional kernels in this repository do a:
 
-```
-$ docker pull hermantolentino/docker-jupyterhub:latest
-```
+> ```
+> $ docker pull hermantolentino/docker-jupyterhub:latest
+> ```
 
-This will download the base build which you can use to run Python 2 and 3, R and Scala notebooks. To use this as the base for a new Dockerfile, use the label above in the `FROM:` section of your new Dockerfile. Before "pulling", check the tag for the latest automated build (it may not say 'latest'), and attach that tag to the label (hermantolentino/docker-jupyterhub:**"TAG HERE"**).
+This will download the base build which you can use to run Python 2 and 3, R and Scala notebooks. To use this as the base for a new Dockerfile, use the label above in the `FROM:` section of your new Dockerfile. Before "pulling", check the tag for the latest automated build (it may not say 'latest', could be 'v4' or 'v5'), and attach that tag to the label (hermantolentino/docker-jupyterhub:**"TAG HERE"**).
 
 ### 2. Build it from the Dockerfile
 
@@ -60,12 +60,21 @@ This container has a `notebooks` directory where there are sample notebooks inst
 
 ## Stopping the container
 
-1. You can stop jupyterhub by pressing `^C` twice, this will bring you back to the root prompt.
+1. You can stop jupyterhub while inside the container by pressing `^C` twice, this will bring you back to the root prompt.
 
 2. Remember, when you delete the JupyterHub container with `# docker rmi "CONTAINER ID"` all the packages you have installed will be gone. You can do a `# docker commit` before deleting the container instance. Running container instances are listed with `# docker ps`. Running and stopped instances are listed with `# docker ps -a`.
+
+## Using Dockerfile-packages
+
+`Docker-packages` is the Dockerfile to use to build JupyterHub with R and Python data science packages. Run this Docker container package if you want to build jupyterhub with R and Python data science packages. It is a big container (~4-5GB) and takes a while to build (depends on your machine specs). To build this container, use the `hermantolentino/jupyterhub:v5` host directory as the context but use `Dockerfile-packages` as the Dockerfile specification:
+
+> `
+> $ docker build -t hermantolentino/jupyter-packages:v1 -f Dockerfile-packages .`
+>
+
 
 ## Notes
 
 1. The JupyterHub configuration file at `/etc/jupyterhub/jupyterhub_config.py` has an insecure configuration. Please read the docs to create a secure configuration for your JupyterHub server.
 
-2. If you want to run JupyterHub from a folder on your computer that has notebooks, ` cd ` to that folder and use: `# docker run -v $(pwd):/home/jupyterhub -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash`. This will substitute your notebook folder for the default container folder `/home/jupyterhub`.
+2. If you want to run JupyterHub and use a folder on your computer that has your notebooks, ` cd ` to that folder and use: `# docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 /bin/bash`. This will make your notebook folder visiable in the container folder `/home/jupyterhub/hostdir`.
