@@ -5,29 +5,29 @@ Note: This JupyterHub and Jupyter Notebook package was built without Anaconda.
 ## Two ways to set up the container
 
 ### 1. Pull the image from Docker Hub
-This is the base build that runs JupyterHub and Jupyter Notebooks with Python 2 and 3 and R 3.3.0 and Scala 2.11 kernels. To use this base build for building docker images that have additional kernels in this repository do a:
+This is the base build that runs JupyterHub and Jupyter Notebooks with Python 2 and 3 and R 3.3.0 and Scala 2.11 kernels. Check the "Build Details" link on the Docker page to see if there is any new base build on queue. To use this base build for building docker images that have additional kernels in this repository do a:
 
 ```
-$ docker pull hermantolentino/jupyterhub:latest
+$ docker pull hermantolentino/docker-jupyterhub:latest
 ```
 
-This will download the base build which you can use to run Python 2 and 3, R and Scala notebooks.
+This will download the base build which you can use to run Python 2 and 3, R and Scala notebooks. To use this as the base for a new Dockerfile, use the label above in the `FROM:` section of your new Dockerfile. Before "pulling", check the tag for the latest automated build (it may not say 'latest'), and attach that tag to the label (hermantolentino/docker-jupyterhub:**"TAG HERE"**).
 
 ### 2. Build it from the Dockerfile
 
-Follow these steps if you want to build the container from the Dockerfile.
+Follow these steps if you want to build the container from the Dockerfile from scratch on your machine.
 
 1. On the command line: `$ git clone` this repository.
 2. `$ cd docker-jupyterhub`
-3. Run this code on the command line: `$ docker build -t hermantolentino/jupyterhub:v3 .` Remember the period - it means use the Dockerfile in the current directory. This will take a while. Make some coffee.
+3. Run this code on the command line: `$ docker build -t hermantolentino/jupyterhub:v5 .` Remember the period - it means use the Dockerfile in the current directory and use that directory as __context__ (this enables you use Docker instructions, like `ADD` or `COPY` that copy files from that directory to your container). This will take a while. Make some coffee.
 
 ## Running the container
 
 1. There are two ways to run the docker image:
 
- 1.1 **Self-contained mode**: Docker container has no access to any host drive. Run `$ docker run -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash`.
+ 1.1 **Self-contained mode**: Docker container you launch will have no access to any host drive directory. Run `$ docker run -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 /bin/bash`.
 
- 1.2 **Using current host directory as work directory**: Run `$ docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash``$(pwd)` substitutes your current directory in the command. `-v` creates a shared volume that enables you to access your current host directory (from where you launch the docker container) inside the container.
+ 1.2 **Using current host directory as work directory**: Run `$ docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 /bin/bash``$(pwd)` substitutes your current directory in the command. `-v` creates a shared volume that enables you to access your current host directory (from where you launch the docker container) inside the container.
 
 2. This will bring you to the docker container root prompt: `root@"DOCKER IMAGE ID":/home/jupyterhub/#`. In mode 1.1 above when you `cd` to `hostdir` you will enter a blank directory. In mode 1.2 above, you will find the files present in the current host directory from where you launched the container.
 
@@ -41,11 +41,14 @@ Follow these steps if you want to build the container from the Dockerfile.
 
 ## Setting up packages and run version test notebooks
 1. To test if the kernels load correctly, you need to load and run the notebooks in the `notebooks` directory from the Jupyter Notebook web interface. Click on each notebook (ends with .ipynb) and press the "run code" button. If the kernels are loaded correctly, you will see the version number of the kernel that runs each notebook.
-2. To load the R and Python data science packages in the `packages` directory, you need to SSH or login to a container bash shell other than the one you ran JupyterHub from. Type ``$ docker exec -it "CONTAINER ID or CONTAINER alias" /bin/bash` to do this.
-3. Once in the container root prompt, to load all the packages for R and Python, at the root prompt, type `# ./installpackages.sh`. This will run the scripts for R and Python. **Warning: This really takes a long time!**
-4. If you want to load packages in batches, run the following scripts one after the other, at the root prompt: `# packages/r-packages.sh`, `# packages/python-packages.sh`, and `# packages/python-nlp-packages.sh`. Installing additional packages take time:
 
- 4.1 **NLTK**: Install NLTK and NLTK data. This takes a long while so one option is to load them as needed at run time (in the notebook) using nltk.download('ID of data set'). The complete set of NLTK data, and the `ID` you need to use for each set, is found here: http://www.nltk.org/nltk_data/.
+2. To load the R and Python data science packages in the `packages` directory, you need to login to a container bash shell other than the one you ran JupyterHub from. Type ``$ docker exec -it "CONTAINER ID or CONTAINER alias" /bin/bash` to do this.
+
+3. Once in the container root prompt, to load all the packages for R and Python, at the root prompt, type `# ./installpackages.sh`. This will run the scripts for R and Python. **Warning: This really takes a long time!**
+
+4. If you want to load packages in batches, run the following scripts one after the other, at the root prompt: `# packages/r-packages.sh`, `# packages/python-packages.sh`, and `# packages/python-nlp-packages.sh`. Installing additional packages takes time:
+
+ 4.1 **NLTK**: Install NLTK package and NLTK data. This takes a long while so one option is to load them as needed at run time (in the notebook) using nltk.download('ID of data set'). The complete set of NLTK data, and the `ID` of the data set you need to use, is found here: http://www.nltk.org/nltk_data/.
 
  4.2 **GIS**: Install the Python GIS package.
 
@@ -58,9 +61,11 @@ This container has a `notebooks` directory where there are sample notebooks inst
 ## Stopping the container
 
 1. You can stop jupyterhub by pressing `^C` twice, this will bring you back to the root prompt.
+
 2. Remember, when you delete the JupyterHub container with `# docker rmi "CONTAINER ID"` all the packages you have installed will be gone. You can do a `# docker commit` before deleting the container instance. Running container instances are listed with `# docker ps`. Running and stopped instances are listed with `# docker ps -a`.
 
 ## Notes
 
 1. The JupyterHub configuration file at `/etc/jupyterhub/jupyterhub_config.py` has an insecure configuration. Please read the docs to create a secure configuration for your JupyterHub server.
+
 2. If you want to run JupyterHub from a folder on your computer that has notebooks, ` cd ` to that folder and use: `# docker run -v $(pwd):/home/jupyterhub -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v3 /bin/bash`. This will substitute your notebook folder for the default container folder `/home/jupyterhub`.
