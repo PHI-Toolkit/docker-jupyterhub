@@ -167,10 +167,10 @@ RUN chmod a+x /home/$NB_USER/*.sh
 RUN chmod a+x /home/$NB_USER/packages/*.sh
 
 # Install Python and R packages
-RUN bash /home/jupyterhub/packages/python-packages.sh
+#RUN bash /home/jupyterhub/packages/python-packages.sh
 #RUN bash /home/jupyterhub/packages/python-gis-packages.sh
 #RUN bash /home/jupyterhub/packages/python-nlp-packages.sh
-RUN bash /home/jupyterhub/packages/r-packages.sh
+#RUN bash /home/jupyterhub/packages/r-packages.sh
 RUN bash /home/jupyterhub/nbextensions/nbextensions-packages.sh
 
 WORKDIR /home/$NB_USER
