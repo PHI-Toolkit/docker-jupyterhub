@@ -1,8 +1,9 @@
 #!/bin/bash
 apt-get update
-apt-get install -y portaudio19-dev flac
+apt-get install -y portaudio19-dev flac uchardet
 
 source /venv27/bin/activate
+pip install cchardet, pyicu, cssutils, chardet
 pip install nltk
 pip install beautifulsoup4
 pip install spacy
@@ -12,6 +13,7 @@ pip install PyAudio
 deactivate
 
 source /venv35/bin/activate
+pip3 install cchardet, pyicu, cssutils, chardet
 pip3 install nltk
 pip3 install beautifulsoup4
 pip3 install spacy
