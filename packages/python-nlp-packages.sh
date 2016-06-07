@@ -1,6 +1,6 @@
 #!/bin/bash
 apt-get update
-apt-get install -y portaudio19-dev flac uchardet libmagic1 enca
+apt-get install -y portaudio19-dev flac uchardet libmagic1 enca recode
 
 source /venv27/bin/activate
 pip install cchardet, pyicu, cssutils, chardet, shutilwhich, python-magic
