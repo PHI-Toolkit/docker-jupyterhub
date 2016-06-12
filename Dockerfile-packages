@@ -147,6 +147,24 @@ RUN curl -L -o jupyter-scala https://git.io/vrHhi && \
     rm -f jupyter-scala
 RUN /root/.local/share/jupyter/kernels/scala211/launcher.jar --global --quiet
 
+# Install IRuby and SciRuby 2.1.5
+# Based on https://github.com/SciRuby/sciruby and http://sciruby.com/docs/
+# and https://www.brightbox.com/docs/ruby/ubuntu/
+
+# Install latest Ruby, Ruby Version Manager
+RUN apt-get install -y python-apt python-pycurl software-properties-common
+RUN apt-add-repository ppa:brightbox/ruby-ng --yes && \
+    apt-get update
+RUN apt-get install -y ruby2.2 ruby2.2-dev libtool-bin libmagickwand-dev imagemagick bundler gnuplot \
+    libgsl0-dev zlib1g-dev libatlas-base-dev
+RUN apt-get install -y libblas-dev checkinstall && \
+    apt-get install -y liblapacke-dev checkinstall
+RUN gem install erector bundler gnuplot
+RUN gem install sciruby-full
+# iruby register creates the kernel.json and kernelspec install makes it visible to jupyter
+RUN iruby register --force && \
+    jupyter kernelspec install /root/.ipython/kernels/ruby
+
 # Backup local files to container image
 COPY etc/ /root/work/.backup/
 COPY etc/ /etc/

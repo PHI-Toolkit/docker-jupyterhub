@@ -5,10 +5,10 @@ Note: This combined JupyterHub and Jupyter Notebook package was built without An
 ## Two ways to set up the container
 
 ### 1. Pull the image from Docker Hub
-This is the base build that runs JupyterHub and Jupyter Notebooks with Python 2 and 3 and R 3.3.0 and Scala 2.11 kernels. Check the "Build Details" link on the Docker page to see if there is any new base build on queue. To use this base build for building docker images that have additional kernels in this repository do a:
+This is the base build that runs JupyterHub and Jupyter Notebooks with Python 2.7 and 3.5, R 3.3.0, Ruby 2.2 and Scala 2.11 kernels. Check the "Build Details" link on the Docker page (https://hub.docker.com/r/hermantolentino/docker-jupyterhub/) to see if there is any new base build on queue. To use this base build for building docker images that have additional kernels in this repository do a:
 
 > ```
-> $ docker pull hermantolentino/docker-jupyterhub:latest
+> $ docker pull hermantolentino/docker-jupyterhub:v5
 > ```
 
 This will download the base build which you can use to run Python 2 and 3, R and Scala notebooks. To use this as the base for a new Dockerfile, use the label above in the `FROM:` section of your new Dockerfile. Before "pulling", check the tag for the latest automated build (it may not say 'latest', could be 'v4' or 'v5'), and attach that tag to the label (hermantolentino/docker-jupyterhub:**"TAG HERE"**).
@@ -29,7 +29,7 @@ Follow these steps if you want to build the container from the Dockerfile from s
 
  1.2 **Using current host directory as work directory**: Run `$ docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 /bin/bash`. `$(pwd)` substitutes your current directory in the command. `-v` creates a shared volume that enables you to access your current host directory (from where you launch the docker container) inside the container.
 
-2. This will bring you to the docker container root prompt: `root@"DOCKER IMAGE ID":/home/jupyterhub/#`. In mode 1.1 above when you `cd` to `hostdir` you will enter a blank directory. In mode 1.2 above, you will find the files present in the current host directory from where you launched the container.
+2. This will bring you to the docker container root prompt: `root@"DOCKER IMAGE ID":/home/jupyterhub/#`. In mode 1.1 above when you `cd` to `hostdir`, you will enter a blank directory. In mode 1.2 above, you will find the files present in the current host directory from where you launched the container.
 
 3. Next, load the R and Python data science packages - See "Setting up packages" below. This will take a while again, have some coffee. If there are any errors, please let me know.
 
@@ -40,7 +40,7 @@ Follow these steps if you want to build the container from the Dockerfile from s
 6. Find the username and password for JupyterHub inside the Dockerfile. You can create another user by logging in to the bash prompt of the container and using `# adduser "username"`.
 
 ## Setting up packages and run version test notebooks
-1. To test if the R, Scala and Python (2.7 and 3.5) kernels load correctly, you need to load and run the notebooks with "Version" in their filenames in the `notebooks` directory from the Jupyter Notebook web interface. Click on each notebook (file name ends with .ipynb) and press the "run code" button. If the kernels are loaded correctly, you will see the version number of the kernel that runs each notebook.
+1. To test if the R, Scala and Python (2.7 and 3.5) kernels load correctly, you need to load and run the kernel notebooks with "Version" in their filenames in the `notebooks` directory from the Jupyter Notebook web interface. Click on each notebook (file name ends with .ipynb) and press the "run code" button. If the kernels are loaded correctly, you will see the version number of the kernel that runs each notebook.
 
 2. To load the R and Python data science packages in the `packages` directory, you need to login to a container bash shell other than the one you ran JupyterHub from. Type ``$ docker exec -it "CONTAINER ID or CONTAINER alias" /bin/bash` to do this.
 
@@ -71,10 +71,11 @@ This container has a `notebooks` directory where there are sample notebooks inst
 > `
 > $ docker build -t hermantolentino/jupyter-packages:v1 -f Dockerfile-packages .`
 >
+
 **Warning: This really takes a long time!**
 
 ## Notes
 
-1. The JupyterHub configuration file at `/etc/jupyterhub/jupyterhub_config.py` has an insecure configuration. Please read the docs to create a secure configuration for your JupyterHub server.
+Please read the docs to create a secure configuration for your JupyterHub server.
 
-2. If you want to run JupyterHub and use a folder on your computer that has your notebooks, ` cd ` to that folder and use: `# docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 /bin/bash`. This will make your notebook folder visiable in the container folder `/home/jupyterhub/hostdir`.
+If you want to run JupyterHub and use a folder on your computer that has your notebooks, ` cd ` to that folder and use: `$ docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 /bin/bash`. This will make your notebook folder visiable in the container folder `/home/jupyterhub/hostdir`.
