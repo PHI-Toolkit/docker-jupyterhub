@@ -81,13 +81,13 @@ RUN ln -snf /bin/bash /bin/sh
 RUN pip install virtualenv && \
     pip3 install virtualenv
 
-RUN virtualenv -p /usr/bin/python2 venv27 && \
+RUN virtualenv --system-site-packages -p /usr/bin/python2 venv27 && \
     source venv27/bin/activate && \
     pip install notebook ipykernel requests terminado && \
     ipython kernelspec install-self && \
     deactivate
 
-RUN virtualenv -p /usr/bin/python3 venv35 && \
+RUN virtualenv --system-site-packages -p /usr/bin/python3 venv35 && \
     source venv35/bin/activate && \
     pip3 install notebook ipykernel requests terminado && \
     ipython3 kernelspec install-self && \

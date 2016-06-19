@@ -1,6 +1,6 @@
 #!/bin/bash
 apt-get update
-apt-get install -y portaudio19-dev flac uchardet libmagic1 enca recode
+apt-get install -y portaudio19-dev flac uchardet libmagic1 enca recode python-lxml
 
 source /venv27/bin/activate
 pip install cchardet, pyicu, cssutils, chardet, shutilwhich, python-magic
@@ -10,6 +10,7 @@ pip install spacy
 #python -m spacy.en.download
 pip install SpeechRecognition
 pip install PyAudio
+pip install pattern, justext
 deactivate
 
 source /venv35/bin/activate
@@ -20,4 +21,5 @@ pip3 install spacy
 #python -m spacy.en.download
 pip3 install SpeechRecognition
 pip3 install PyAudio
+pip2 install pattern, justext
 deactivate
