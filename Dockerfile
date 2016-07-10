@@ -178,7 +178,7 @@ RUN R -e "install.packages('RCurl', lib='/usr/local/lib/R/site-library', repos='
 RUN R -e "install.packages(c('IRkernel','IRdisplay'), repos = 'http://irkernel.github.io/', type = 'source')" && \
     R -e "IRkernel::installspec(user=FALSE)"
 
-RUN apt-get install -y libyaml-dev
+RUN apt-get install -y libyaml-dev pypy-dev
 
 # Backup local files to container image
 COPY etc/ /root/work/.backup/

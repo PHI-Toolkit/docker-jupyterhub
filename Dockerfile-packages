@@ -213,10 +213,10 @@ RUN chmod a+x /home/$NB_USER/packages/*.sh
 
 # Install Python, R and notebook extension packages
 RUN bash /home/jupyterhub/packages/python-packages.sh
-RUN bash /home/jupyterhub/packages/python-gis-packages.sh
-RUN bash /home/jupyterhub/packages/python-nlp-packages.sh
-RUN bash /home/jupyterhub/packages/r-packages.sh
-RUN bash /home/jupyterhub/packages/r-gis-packages.sh
+#RUN bash /home/jupyterhub/packages/python-gis-packages.sh
+#RUN bash /home/jupyterhub/packages/python-nlp-packages.sh
+#RUN bash /home/jupyterhub/packages/r-packages.sh
+#RUN bash /home/jupyterhub/packages/r-gis-packages.sh
 # https://github.com/ipython-contrib/IPython-notebook-extensions
 RUN bash /home/jupyterhub/nbextensions/nbextensions-packages.sh
 

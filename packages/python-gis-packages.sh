@@ -16,21 +16,6 @@ apt-get install python-mpltoolkists.basemap python3-mpltoolkits.basemap
 export CPLUS_INCLUDE_PATH=/usr/include/gdal
 export C_INCLUDE_PATH=/usr/include/gdal
 
-# GDAL pip install exception
-source /vepypy/bin/activate
-pip install --upgrade setuptools pip
-pip install ipyparallel
-#pip install GDAL
-pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL==`gdal-config --version`
-# https://github.com/EverythingMe/geodis
-pip install geojson cartopy pyshp geopy pygeocodio
-pip install scikit-image pysal geopandas
-pip install Geobases
-pip install -i https://pypi.anaconda.org/pypi/simple geocoder
-# https://github.com/thampiman/reverse-geocoder
-pip install reverse_geocoder
-deactivate
-
 source /venv27/bin/activate
 pip install --upgrade setuptools pip
 pip install ipyparallel
