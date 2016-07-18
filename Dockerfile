@@ -2,7 +2,7 @@
 # JupyterHub is a multi-user server for Jupyter
 # This installation does not use Anaconda.
 
-FROM ubuntu:wily
+FROM ubuntu:14.04
 
 MAINTAINER herman.tolentino@gmail.com
 
@@ -74,29 +74,35 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 0527A9B7 && \
 RUN chmod +x /tini
 
 RUN apt-get update
-RUN apt-get install -y python-dev python3-dev npm python-pip python3-pip nodejs-legacy virtualenv pypy
+RUN apt-get install -y python-dev python3-dev npm python-pip python3-pip nodejs-legacy python-virtualenv pypy
 RUN apt-get install -y libzmq3 libzmq3-dev python3-zmq
 
 # use bash
 RUN ln -snf /bin/bash /bin/sh
 
 # configure Python virtual environments
-RUN virtualenv --system-site-packages -p /usr/bin/pypy /vepypy && \
-    source /vepypy/bin/activate && \
-    pip install --upgrade setuptools jupyter ipykernel requests pyzmq terminado jupyter_contrib_core && \
-    ipython kernel install --name vepypy --display-name "Python-PyPy 2.7" && \
-    deactivate
-
-RUN virtualenv --system-site-packages -p /usr/bin/python2 /venv27 && \
+RUN \
+    virtualenv --system-site-packages -p /usr/bin/python2 /venv27 && \
     source /venv27/bin/activate && \
-    pip install --upgrade setuptools jupyter ipykernel requests terminado jupyter_contrib_core && \
+    wget bootstrap.pypa.io/ez_setup.py -O - | python && \
+    pip2 install --upgrade pip setuptools tornado jupyter ipykernel requests terminado jupyter_contrib_core && \
     ipython kernel install --name python2 --display-name "Python 2.7" && \
     deactivate
 
 RUN virtualenv --system-site-packages -p /usr/bin/python3 /venv35 && \
     source /venv35/bin/activate && \
-    pip3 install --upgrade setuptools jupyter ipykernel requests terminado jupyter_contrib_core && \
+    wget bootstrap.pypa.io/ez_setup.py -O - | python3 && \
+    pip3 install --upgrade setuptools tornado jupyter ipykernel requests terminado jupyter_contrib_core && \
     ipython kernel install --name python3 --display-name "Python 3.5" && \
+    deactivate
+
+RUN virtualenv --system-site-packages -p /usr/bin/pypy /vepypy && \
+    source /vepypy/bin/activate && \
+    wget bootstrap.pypa.io/ez_setup.py -O - | python && \
+    pip install --upgrade pip setuptools tornado jupyter ipykernel requests && \
+    pip install --upgrade pyzmq terminado && \
+    pip install --upgrade jupyter_contrib_core && \
+    ipython kernel install --name vepypy --display-name "Python-PyPy 2.7" && \
     deactivate
 
 RUN npm install -g configurable-http-proxy && \
@@ -141,7 +147,7 @@ RUN /root/.local/share/jupyter/kernels/scala211/launcher.jar --global --quiet
 RUN apt-get install -y python-apt python-pycurl software-properties-common
 RUN apt-add-repository ppa:brightbox/ruby-ng --yes && \
     apt-get update
-RUN apt-get install -y ruby2.2 ruby2.2-dev libtool-bin libmagickwand-dev imagemagick bundler gnuplot \
+RUN apt-get install -y ruby2.2 ruby2.2-dev libtool libmagickwand-dev imagemagick bundler gnuplot \
     libgsl0-dev zlib1g-dev libatlas-base-dev
 RUN apt-get install -y libblas-dev checkinstall && \
     apt-get install -y liblapacke-dev checkinstall autoconf automake

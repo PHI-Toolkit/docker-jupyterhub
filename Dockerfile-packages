@@ -1,14 +1,8 @@
-#
-#   jupyterhub-packages: JupyterHub with R and Python Data Science Packages
-#   Run this package if you want to build jupyterhub with R and Python data science packages. It is
-#     a big container and takes a while to build. To build this container, use the
-#     hermantolentino/jupyterhub:v5 host directory as the context but use "Dockerfile-packages" (this file)
-#     as the Dockerfile specification:
-#
-#     $ docker build -t hermantolentino/jupyter-packages:v1 -f Dockerfile-packages .
-#
+# Install JupyterHub: https://github.com/jupyterhub/jupyterhub
+# JupyterHub is a multi-user server for Jupyter
+# This installation does not use Anaconda.
 
-FROM ubuntu:wily
+FROM ubuntu:14.04
 
 MAINTAINER herman.tolentino@gmail.com
 
@@ -80,29 +74,36 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 0527A9B7 && \
 RUN chmod +x /tini
 
 RUN apt-get update
-RUN apt-get install -y python-dev python3-dev npm python-pip python3-pip nodejs-legacy virtualenv pypy
+RUN apt-get install -y python-dev python3-dev npm python-pip python3-pip nodejs-legacy python-virtualenv pypy
 RUN apt-get install -y libzmq3 libzmq3-dev python3-zmq
+RUN apt-get install -y libffi-dev libssl-dev
 
 # use bash
 RUN ln -snf /bin/bash /bin/sh
 
 # configure Python virtual environments
-RUN virtualenv --system-site-packages -p /usr/bin/pypy /vepypy && \
-    source /vepypy/bin/activate && \
-    pip install --upgrade setuptools jupyter ipykernel requests pyzmq terminado jupyter_contrib_core && \
-    ipython kernel install --name vepypy --display-name "Python-PyPy 2.7" && \
-    deactivate
-
-RUN virtualenv --system-site-packages -p /usr/bin/python2 /venv27 && \
+RUN \
+    virtualenv --system-site-packages -p /usr/bin/python2 /venv27 && \
     source /venv27/bin/activate && \
-    pip install --upgrade setuptools jupyter ipykernel requests terminado jupyter_contrib_core && \
+    wget bootstrap.pypa.io/ez_setup.py -O - | python && \
+    pip2 install --upgrade pip setuptools tornado jupyter ipykernel requests terminado jupyter_contrib_core && \
     ipython kernel install --name python2 --display-name "Python 2.7" && \
     deactivate
 
 RUN virtualenv --system-site-packages -p /usr/bin/python3 /venv35 && \
     source /venv35/bin/activate && \
-    pip3 install --upgrade setuptools jupyter ipykernel requests terminado jupyter_contrib_core && \
+    wget bootstrap.pypa.io/ez_setup.py -O - | python3 && \
+    pip3 install --upgrade setuptools tornado jupyter ipykernel requests terminado jupyter_contrib_core && \
     ipython kernel install --name python3 --display-name "Python 3.5" && \
+    deactivate
+
+RUN virtualenv --system-site-packages -p /usr/bin/pypy /vepypy && \
+    source /vepypy/bin/activate && \
+    wget bootstrap.pypa.io/ez_setup.py -O - | python && \
+    pip install --upgrade pip setuptools tornado jupyter ipykernel requests && \
+    pip install --upgrade pyzmq terminado && \
+    pip install --upgrade jupyter_contrib_core && \
+    ipython kernel install --name vepypy --display-name "Python-PyPy 2.7" && \
     deactivate
 
 RUN npm install -g configurable-http-proxy && \
@@ -147,7 +148,7 @@ RUN /root/.local/share/jupyter/kernels/scala211/launcher.jar --global --quiet
 RUN apt-get install -y python-apt python-pycurl software-properties-common
 RUN apt-add-repository ppa:brightbox/ruby-ng --yes && \
     apt-get update
-RUN apt-get install -y ruby2.2 ruby2.2-dev libtool-bin libmagickwand-dev imagemagick bundler gnuplot \
+RUN apt-get install -y ruby2.2 ruby2.2-dev libtool libmagickwand-dev imagemagick bundler gnuplot \
     libgsl0-dev zlib1g-dev libatlas-base-dev
 RUN apt-get install -y libblas-dev checkinstall && \
     apt-get install -y liblapacke-dev checkinstall autoconf automake
@@ -184,7 +185,7 @@ RUN R -e "install.packages('RCurl', lib='/usr/local/lib/R/site-library', repos='
 RUN R -e "install.packages(c('IRkernel','IRdisplay'), repos = 'http://irkernel.github.io/', type = 'source')" && \
     R -e "IRkernel::installspec(user=FALSE)"
 
-RUN apt-get install -y libyaml-dev
+RUN apt-get install -y libyaml-dev pypy-dev
 
 # Backup local files to container image
 COPY etc/ /root/work/.backup/
@@ -213,10 +214,10 @@ RUN chmod a+x /home/$NB_USER/packages/*.sh
 
 # Install Python, R and notebook extension packages
 RUN bash /home/jupyterhub/packages/python-packages.sh
-#RUN bash /home/jupyterhub/packages/python-gis-packages.sh
-#RUN bash /home/jupyterhub/packages/python-nlp-packages.sh
-#RUN bash /home/jupyterhub/packages/r-packages.sh
-#RUN bash /home/jupyterhub/packages/r-gis-packages.sh
+RUN bash /home/jupyterhub/packages/python-gis-packages.sh
+RUN bash /home/jupyterhub/packages/python-nlp-packages.sh
+RUN bash /home/jupyterhub/packages/r-packages.sh
+RUN bash /home/jupyterhub/packages/r-gis-packages.sh
 # https://github.com/ipython-contrib/IPython-notebook-extensions
 RUN bash /home/jupyterhub/nbextensions/nbextensions-packages.sh
 

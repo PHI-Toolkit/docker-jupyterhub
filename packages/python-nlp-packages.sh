@@ -1,24 +1,32 @@
 #!/bin/bash
 apt-get update
 apt-get install -y portaudio19-dev flac uchardet libmagic1 enca recode python-lxml \
-  libxml2-dev libxslt-dev
+  libxml2-dev libxslt-dev ed
 
 source /venv27/bin/activate
-pip install --upgrade setuptools pip
-pip install cchardet, pyicu, cssutils, chardet, shutilwhich, python-magic
-pip install nltk
-pip install beautifulsoup4
-pip install spacy
+pip2 install --upgrade setuptools pip
+pip2 install chardet
+pip2 install pyicu
+pip2 install cssutils
+pip2 install shutilwhich
+pip2 install python-magic
+pip2 install nltk
+pip2 install beautifulsoup4
+pip2 install spacy
 #python -m spacy.en.download
-pip install SpeechRecognition
-pip install PyAudio
-pip install pattern, justext
-pip install pyquery httplib2 biopython
+pip2 install SpeechRecognition
+pip2 install PyAudio
+pip2 install justext
+pip2 install pyquery httplib2 biopython
 deactivate
 
 source /venv35/bin/activate
 pip3 install --upgrade setuptools pip
-pip3 install cchardet, pyicu, cssutils, chardet, shutilwhich, python-magic
+pip3 install chardet
+pip3 install pyicu
+pip3 install cssutils
+pip3 install shutilwhich
+pip3 install python-magic
 pip3 install nltk
 pip3 install beautifulsoup4
 pip3 install spacy

@@ -4,21 +4,21 @@ apt-get update
 apt-get install -y libhdf5-serial-dev libfreetype6-dev
 
 source /venv27/bin/activate
-pip install --upgrade setuptools pip
-pip install retry
-pip install numpy pandas
-pip install joblib cython xgboost python-dateutil
-pip install scipy scikit-learn crab sklearn-pandas
-pip install h5py
-pip install statsmodels pybrain gensim
-pip install bokeh plotly vega folium vincent
-pip install matplotlib
-pip install csvkit tables Dora
-pip install ipywidgets
-pip install seaborn lightning-python
-pip install blaze
-pip install ipython-cypher
-pip install yhat
+pip2 install --upgrade setuptools pip
+pip2 install retry
+pip2 install numpy pandas
+pip2 install joblib cython xgboost python-dateutil
+pip2 install scipy scikit-learn crab sklearn-pandas
+pip2 install h5py
+pip2 install statsmodels pybrain gensim
+pip2 install bokeh plotly vega folium vincent
+pip2 install matplotlib
+pip2 install csvkit tables Dora
+pip2 install ipywidgets
+pip2 install seaborn lightning-python
+pip2 install blaze
+pip2 install ipython-cypher
+pip2 install yhat
 deactivate
 
 source /venv35/bin/activate
