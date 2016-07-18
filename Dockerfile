@@ -76,6 +76,7 @@ RUN chmod +x /tini
 RUN apt-get update
 RUN apt-get install -y python-dev python3-dev npm python-pip python3-pip nodejs-legacy python-virtualenv pypy
 RUN apt-get install -y libzmq3 libzmq3-dev python3-zmq
+RUN apt-get install -y libffi-dev libssl-dev
 
 # use bash
 RUN ln -snf /bin/bash /bin/sh

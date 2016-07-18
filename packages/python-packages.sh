@@ -2,8 +2,10 @@
 # https://github.com/rasbt/pattern_classification/blob/master/resources/python_data_libraries.md
 apt-get update
 apt-get install -y libhdf5-serial-dev libfreetype6-dev
+apt-get install -y libffi-dev libssl-dev
 
 source /venv27/bin/activate
+pip2 install --upgrade pyOpenSSL ndg-httpsclient pyasn certifi
 pip2 install --upgrade setuptools pip
 pip2 install retry
 pip2 install numpy pandas

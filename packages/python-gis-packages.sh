@@ -6,7 +6,6 @@
 # Use UbuntuGIS repository for GDAL
 apt-get install -y software-properties-common
 apt-add-repository -y ppa:ubuntugis/ubuntugis-unstable
-add-apt-repository -y ppa:imincik/gis
 apt-get update
 #apt-get install -y libcpl-dev libgeos-dev libgdal-dev libgdal1h libgdal1-dev libproj-dev \
 #    libgeos-dev gdal-bin

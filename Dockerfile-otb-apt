@@ -1,0 +1,30 @@
+
+# container: hermantolentino/docker-pyspark:v1
+# To use this Docker container you should have installed its container dependencies:
+# 1. hermantolentino/jupyterhub-packages:v1
+#
+FROM hermantolentino/jupyterhub-packages:v1
+
+MAINTAINER herman.tolentino@gmail.com
+
+USER root
+
+RUN \
+  DEBIAN_FRONTEND=noninteractive
+
+RUN \
+  apt-get update && \
+  apt-get install -y apt-transport-https
+
+RUN apt-get install -qqy software-properties-common --no-install-recommends && \
+  apt-add-repository -y ppa:ubuntugis/ubuntugis-unstable && \
+  apt-get -qqy update && \
+  apt-get install -qqy otb-bin otb-bin-qt python-otb --no-install-recommends && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
+RUN \
+  apt-get -y autoremove
+
+CMD \
+  ["/bin/bash"]
