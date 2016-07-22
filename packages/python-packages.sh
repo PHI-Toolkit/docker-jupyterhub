@@ -5,8 +5,7 @@ apt-get install -y libhdf5-serial-dev libfreetype6-dev
 apt-get install -y libffi-dev libssl-dev
 
 source /venv27/bin/activate
-pip2 install --upgrade pyOpenSSL ndg-httpsclient pyasn certifi
-pip2 install --upgrade setuptools pip
+pip2 install pyOpenSSL ndg-httpsclient pyasn certifi
 pip2 install retry
 pip2 install numpy pandas
 pip2 install joblib cython xgboost python-dateutil
@@ -25,6 +24,9 @@ deactivate
 
 source /venv35/bin/activate
 pip3 install --upgrade setuptools pip
+deactivate
+
+source /venv35/bin/activate
 pip3 install retry
 pip3 install numpy pandas
 pip3 install joblib cython xgboost python-dateutil

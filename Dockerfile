@@ -188,8 +188,6 @@ RUN R -e "install.packages(c('IRkernel','IRdisplay'), repos = 'http://irkernel.g
 RUN apt-get install -y libyaml-dev pypy-dev
 
 # Backup local files to container image
-COPY etc/ /root/work/.backup/
-COPY etc/ /etc/
 RUN mkdir -p /root/work/.backup/nbextensions
 COPY nbextensions/ /root/work/.backup/nbextensions/
 RUN mkdir -p /root/work/.backup/packages
@@ -212,6 +210,9 @@ RUN chmod a+w -R /home/$NB_USER
 RUN chmod a+x /home/$NB_USER/*.sh
 RUN chmod a+x /home/$NB_USER/packages/*.sh
 
+RUN \
+  pip2 install --upgrade urllib3[secure]
+
 # Install Python, R and notebook extension packages
 # RUN bash /home/jupyterhub/packages/python-packages.sh
 # RUN bash /home/jupyterhub/packages/python-gis-packages.sh
@@ -220,6 +221,13 @@ RUN chmod a+x /home/$NB_USER/packages/*.sh
 # RUN bash /home/jupyterhub/packages/r-gis-packages.sh
 # https://github.com/ipython-contrib/IPython-notebook-extensions
 RUN bash /home/jupyterhub/nbextensions/nbextensions-packages.sh
+
+# Install supervisord
+COPY etc/ /etc/
+COPY etc/init/ /etc/init/
+
+RUN \
+    apt-get install -y supervisor
 
 # replace Python with PyPy!
 RUN sed -i 's/python3/pypy/g' /usr/local/bin/jupyter
@@ -233,6 +241,7 @@ EXPOSE 8956
 EXPOSE 8957
 EXPOSE 8081
 EXPOSE 8000
+EXPOSE 9001
 
 ENTRYPOINT ["/tini", "--"]
 

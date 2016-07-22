@@ -26,5 +26,6 @@ RUN apt-get install -qqy software-properties-common --no-install-recommends && \
 RUN \
   apt-get -y autoremove
 
-CMD \
-  ["/bin/bash"]
+ENTRYPOINT ["/tini", "--"]
+
+CMD ["/bin/bash"]
