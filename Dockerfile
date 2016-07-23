@@ -211,7 +211,8 @@ RUN chmod a+x /home/$NB_USER/*.sh
 RUN chmod a+x /home/$NB_USER/packages/*.sh
 
 RUN \
-  pip2 install --upgrade urllib3[secure]
+  pip2 install --upgrade urllib3[secure] && \
+  pip2 install pyOpenSSL ndg-httpsclient certifi
 
 # Install Python, R and notebook extension packages
 # RUN bash /home/jupyterhub/packages/python-packages.sh

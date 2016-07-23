@@ -5,7 +5,7 @@ apt-get install -y libhdf5-serial-dev libfreetype6-dev
 apt-get install -y libffi-dev libssl-dev
 
 source /venv27/bin/activate
-pip2 install pyOpenSSL ndg-httpsclient pyasn certifi
+pip2 install pyasn 
 pip2 install retry
 pip2 install numpy pandas
 pip2 install joblib cython xgboost python-dateutil
