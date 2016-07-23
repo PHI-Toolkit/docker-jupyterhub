@@ -18,6 +18,7 @@ pip2 install SpeechRecognition
 pip2 install PyAudio
 pip2 install justext
 pip2 install pyquery httplib2 biopython
+pip2 install newspaper
 deactivate
 
 source /venv35/bin/activate
@@ -36,4 +37,5 @@ pip3 install PyAudio
 # pattern uses pip2 due to print() error
 # pip3 install pattern, justext
 pip3 install pyquery httplib2 biopython
+pip3 install newspaper3k
 deactivate
