@@ -220,6 +220,8 @@ RUN \
 # RUN bash /home/jupyterhub/packages/python-nlp-packages.sh
 # RUN bash /home/jupyterhub/packages/r-packages.sh
 # RUN bash /home/jupyterhub/packages/r-gis-packages.sh
+# RUN bash /home/jupyterhub/packages/ruby-packages.sh
+# RUN bash /home/jupyterhub/packages/python-databases.sh
 # https://github.com/ipython-contrib/IPython-notebook-extensions
 RUN bash /home/jupyterhub/nbextensions/nbextensions-packages.sh
 

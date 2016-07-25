@@ -2,6 +2,8 @@
 apt-get update
 apt-get install -y portaudio19-dev flac uchardet libmagic1 enca recode python-lxml \
   libxml2-dev libxslt-dev ed
+pip install -U ntlk
+python -m nltk.download -d /usr/share/nltk_data all
 
 source /venv27/bin/activate
 pip2 install --upgrade setuptools pip
@@ -19,6 +21,7 @@ pip2 install PyAudio
 pip2 install justext
 pip2 install pyquery httplib2 biopython
 pip2 install newspaper
+pip2 install service_identity scrapy
 deactivate
 
 source /venv35/bin/activate
@@ -38,4 +41,5 @@ pip3 install PyAudio
 # pip3 install pattern, justext
 pip3 install pyquery httplib2 biopython
 pip3 install newspaper3k
+pip3 install service_identity scrapy
 deactivate
