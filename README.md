@@ -1,6 +1,11 @@
 # docker-jupyterhub
 
-Note: This combined JupyterHub and Jupyter Notebook package was built without Anaconda. Source code is available at https://github.com/hermantolentino/docker-jupyterhub.
+Note: This combined JupyterHub and Jupyter Notebook package was built without Anaconda. The base image is Ubuntu Trusty (14.04). Source code to build the container is available at https://github.com/hermantolentino/docker-jupyterhub.
+
+## Pre-requisites
+
+1. Make sure you have Docker installed on your PC, laptop or virtual machine. You can read more about installing Docker here: https://docs.docker.com/engine/installation/.
+2. Make sure you read about Jupyter (http://jupyter.org/) and JupyterHub (https://github.com/jupyterhub/jupyterhub).
 
 ## Two ways to set up the container
 
@@ -23,11 +28,11 @@ Follow these steps if you want to build the container from the Dockerfile from s
 
 ## Running the container
 
-1. There are two ways to run the docker image:
+1. There are two ways to run a container based on this docker image:
 
- 1.1 **Self-contained mode**: Docker container you launch will have no access to any host drive directory. Run `$ docker run -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 /bin/bash`.
+ 1.1 **Self-contained mode**: Docker container you launch will have no access to any host drive directory. Run `$ docker run -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 supervisord -c /etc/supervisord.conf`. This build now has supervisord to launch JupyterHub when running the docker container.
 
- 1.2 **Using current host directory as work directory**: Run `$ docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 /bin/bash`. `$(pwd)` substitutes your current directory in the command. `-v` creates a shared volume that enables you to access your current host directory (from where you launch the docker container) inside the container.
+ 1.2 **Using current host directory as work directory**: Run `$ docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 supervisord -c /etc/supervisord.conf`. `$(pwd)` substitutes your current directory in the command. `-v` creates a shared volume that enables you to access your current host directory (from where you launch the docker container) inside the container.
 
 2. This will bring you to the docker container root prompt: `root@"DOCKER IMAGE ID":/home/jupyterhub/#`. In mode 1.1 above when you `cd` to `hostdir`, you will enter a blank directory. In mode 1.2 above, you will find the files present in the current host directory from where you launched the container.
 
@@ -40,17 +45,19 @@ Follow these steps if you want to build the container from the Dockerfile from s
 6. Find the username and password for JupyterHub inside the Dockerfile. You can create another user by logging in to the bash prompt of the container and using `# adduser "username"`.
 
 ## Setting up packages and run version test notebooks
-1. To test if the R, Scala and Python (2.7 and 3.5) kernels load correctly, you need to load and run the kernel notebooks with "Version" in their filenames in the `notebooks` directory from the Jupyter Notebook web interface. Click on each notebook (file name ends with .ipynb) and press the "run code" button. If the kernels are loaded correctly, you will see the version number of the kernel that runs each notebook.
+1. To test if the R, Scala and Python (2.7 and 3.5), Python-PyPy and Ruby kernels load correctly, you need to load and run the kernel notebooks with "Version" in their filenames in the `notebooks` directory from the Jupyter Notebook web interface. Click on each notebook (file name ends with .ipynb) and press the "run code" button. If the kernels are loaded correctly, you will see the version number of the kernel that runs each notebook.
 
 2. To load the R and Python data science packages in the `packages` directory, you need to login to a container bash shell other than the one you ran JupyterHub from. Type ``$ docker exec -it "CONTAINER ID or CONTAINER alias" /bin/bash` to do this.
 
-3. If you want to load packages in batches, run the following scripts one after the other, at the root prompt: `# packages/r-packages.sh`, `# packages/python-packages.sh`, and `# packages/python-nlp-packages.sh`. Installing additional packages takes time:
+3. If you want to load packages in batches, run the following scripts one after the other, at the root prompt: `# packages/r-packages.sh`, `# packages/python-packages.sh`, and `# packages/python-nlp-packages.sh`. There may be additional packages that have been added since this document was created. Installing additional packages takes time:
 
- 3.1 **NLTK**: Install NLTK package and NLTK data. This takes a long while so one option is to load them as needed at run time (in the notebook) using nltk.download('ID of data set'). The complete set of NLTK data, and the `ID` of the data set you need to use, is found here: http://www.nltk.org/nltk_data/.
+ 3.1 **GIS**: Install the Python and R GIS packages. There is an additional Dockerfile called "Dockerfile-otb-apt" to install the Orfeo Toolbox - more about that here: https://www.orfeo-toolbox.org/.
 
- 3.2 **GIS**: Install the Python GIS package.
+ 3.2 **NLP**: Install the Python and R NLP packages. This also installs the NLTK data.
 
- 3.3 **NLP**: Install the Python NLP package.
+ 3.3 **DATABASE CONNECTORS**: There is a package for Python database connectors for Neo4J, MySQL, PostgreSQL and Redis.
+
+ 3.4 **NOTEBOOK EXTENSIONS**: Some notebook extensions are also included.
 
 ## Installed notebooks
 
