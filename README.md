@@ -24,23 +24,48 @@ Follow these steps if you want to build the container from the Dockerfile from s
 
 1. On the command line: `$ git clone` this repository: https://github.com/hermantolentino/docker-jupyterhub
 2. `$ cd docker-jupyterhub`
-3. Run this code on the command line: `$ docker build -t hermantolentino/jupyterhub:v5 .` Remember the period - it means use the Dockerfile in the current directory and use that directory as __context__ (this enables you use Docker instructions, like `ADD` or `COPY` that copy files from that directory to your container). This will take a while. Make some coffee.
+3. Run this code on the command line: `$ docker build -t hermantolentino/docker-jupyterhub:v5 .` Remember the period - it means use the Dockerfile in the current directory and use that directory as __context__ (this enables you use Docker instructions, like `ADD` or `COPY` that copy files from that directory to your container). This will take a while. Make some coffee.
 
 ## Running the container
 
 1. There are two ways to run a container based on this docker image:
 
- 1.1 **Self-contained mode**: Docker container you launch will have no access to any host drive directory. Run `$ docker run -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 supervisord -c /etc/supervisord.conf`. This build now has supervisord to launch JupyterHub when running the docker container.
+ 1.1 **Self-contained mode**: Docker container you launch will have no access to any host drive directory.
+> ```
+> $ docker run -it -p 0.0.0.0:8000:8000 hermantolentino/docker-jupyterhub:v5 supervisord -c /etc/supervisord.conf`
+> ```
 
- 1.2 **Using current host directory as work directory**: Run `$ docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 supervisord -c /etc/supervisord.conf`. `$(pwd)` substitutes your current directory in the command. `-v` creates a shared volume that enables you to access your current host directory (from where you launch the docker container) inside the container.
+ This build now has supervisord to launch JupyterHub when running the docker container.
 
-2. This will bring you to the docker container root prompt: `root@"DOCKER IMAGE ID":/home/jupyterhub/#`. In mode 1.1 above when you `cd` to `hostdir`, you will enter a blank directory. In mode 1.2 above, you will find the files present in the current host directory from where you launched the container.
+ 1.2 **Using current host directory as work directory**:
+> ```
+> $ docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 supervisord -c /etc/supervisord.conf
+> ```
+
+ `$(pwd)` substitutes your current directory in the command. `-v` creates a shared volume that enables you to access your current host directory (from where you launch the docker container) inside the container.
+
+ 1.3 **Using launch script**: You can run launch the container.
+
+ > ```
+ > $ ./launch-jupyterhub.sh
+ > ```
+
+ Another launch script, launch-jupyterhub-neo4j.sh, launches a neo4j container which can be accesses from jupyter notebooks.
+
+2. This will bring you to the docker container root prompt:
+> ```
+> root@"DOCKER IMAGE ID":/home/jupyterhub/#
+> ```
+
+ In mode 1.1 above when you `cd` to `hostdir`, you will enter a blank directory. In mode 1.2 above, you will find the files present in the current host directory from where you launched the container.
 
 3. Next, load the R and Python data science packages - See "Setting up packages" below. This will take a while again, have some coffee. If there are any errors, please let me know.
 
 4. After loading the packages, you are now ready to launch JupyterHub. At the root prompt type: `# bash startjupyterhub.sh`. This will start your JupyterHub server.
 
 5. Open a browser and type in `https://localhost:8000/`. On the Mac, you may have to substitute "localhost" with the docker machine IP address. The SSL certificates for `https` are self-signed so you will get a browser warning about the site being insecure.
+
+![](./jupyterhub-login.png)
 
 6. Find the username and password for JupyterHub inside the Dockerfile. You can create another user by logging in to the bash prompt of the container and using `# adduser "username"`.
 

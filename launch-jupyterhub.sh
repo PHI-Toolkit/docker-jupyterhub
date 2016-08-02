@@ -1,7 +1,8 @@
-docker run -v $(pwd):/home/jupyterhub/hostdir -itd \
+#!/bin/bash
+docker run -itd \
+-v $(pwd):/home/jupyterhub/hostdir \
 -p 0.0.0.0:8000:8000 \
 -p 0.0.0.0:8080:8080 \
 --name jupyterhub \
---link neo4j:neo4j \
 hermantolentino/jupyterhub-packages:v1 \
 supervisord -c /etc/supervisord.conf
