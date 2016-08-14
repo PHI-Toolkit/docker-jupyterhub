@@ -44,6 +44,7 @@ RUN dpkg-reconfigure locales
 #   change "jupyterhub" and "Password1" below.
 RUN useradd -m -s $SHELL -N -u $NB_UID $NB_USER && \
     echo jupyterhub:Password1 | chpasswd
+RUN usermod -aG sudo $NB_USER
 RUN echo "cacert=/etc/ssl/certs/ca-certificates.crt" > /home/$NB_USER/.curlrc
 
 RUN mkdir -p /root/work && \
