@@ -182,10 +182,10 @@ RUN R -e "install.packages('RCurl', lib='/usr/local/lib/R/site-library', repos='
     R -e "install.packages('base64enc', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('evaluate', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
     R -e "install.packages('uuid', lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')" && \
-    R -e "install.packages('rzmq', repos = 'http://irkernel.github.io/', type = 'source')"
-RUN R -e "install.packages(c('IRkernel','IRdisplay'), repos = 'http://irkernel.github.io/', type = 'source')" && \
+RUN R -e "install.packages(c('rzmq', 'IRdisplay', 'IRkernel', 'crayon', 'pbdZMQ'), repos='https://github.com/IRkernel/IRkernel', type='source')" && \
+    R -e "devtools::install_github('IRkernel/IRkernel')" && \
     R -e "IRkernel::installspec(user=FALSE)"
-
+    
 RUN apt-get install -y libyaml-dev pypy-dev
 
 # Backup local files to container image
