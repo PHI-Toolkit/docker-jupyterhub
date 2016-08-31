@@ -1,7 +1,7 @@
-
 # container: hermantolentino/docker-pyspark:v1
 # To use this Docker container you should have installed its container dependencies:
-# 1. hermantolentino/jupyterhub-packages:v1
+# 1. hermantolentino/docker-jupyterhub:v5
+# 2. hermantolentino/jupyterhub-packages:v1
 #
 FROM hermantolentino/jupyterhub-packages:v1
 

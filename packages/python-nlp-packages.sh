@@ -2,8 +2,6 @@
 apt-get update
 apt-get install -y portaudio19-dev flac uchardet libmagic1 enca recode python-lxml \
   libxml2-dev libxslt-dev ed
-pip install -U ntlk
-python -m nltk.download -d /usr/share/nltk_data all
 
 source /venv27/bin/activate
 pip2 install --upgrade setuptools pip
@@ -43,3 +41,12 @@ pip3 install pyquery httplib2 biopython
 pip3 install newspaper3k
 pip3 install service_identity scrapy
 deactivate
+
+# installing nltk and data below as a unit
+echo "deb http://us.archive.ubuntu.com/ubuntu trusty main universe" >> /etc/apt/sources.list
+apt-get update
+apt-get install -y python-numpy python-nltk
+
+apt-get clean
+apt-get autoremove -y
+rm -rf /var/lib/apt/lists/*

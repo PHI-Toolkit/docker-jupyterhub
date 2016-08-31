@@ -5,7 +5,7 @@ apt-get install -y libhdf5-serial-dev libfreetype6-dev
 apt-get install -y libffi-dev libssl-dev
 
 source /venv27/bin/activate
-pip2 install pyasn 
+pip2 install pyasn
 pip2 install retry
 pip2 install numpy pandas
 pip2 install joblib cython xgboost python-dateutil
@@ -48,3 +48,14 @@ python3 setup.py install
 cd ..
 pip3 install yhat
 deactivate
+
+echo "deb http://downloads.skewed.de/apt/trusty trusty universe" >> /etc/apt/sources.list
+add-apt-repository ppa:ubuntu-toolchain-r/test -y
+apt-get update
+apt-get install -y --force-yes python-graph-tool
+apt-get install -y --force-yes python3-graph-tool
+
+rm -rf /var/cache/apt/archives/*.deb
+apt-get clean
+apt-get autoremove -y
+rm -rf /var/lib/apt/lists/*

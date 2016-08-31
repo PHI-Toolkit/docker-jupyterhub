@@ -18,6 +18,7 @@ apt-get install -yf
 wget http://mirrors.kernel.org/ubuntu/pool/universe/b/basemap/python-mpltoolkits.basemap_1.0.7+dfsg-1_amd64.deb
 dpkg -i python-mpltoolkits.basemap_1.0.7+dfsg-1_amd64.deb
 apt-get install -yf
+rm *.deb
 
 # important step for installing GDAL
 export CPLUS_INCLUDE_PATH=/usr/include/gdal
@@ -53,3 +54,7 @@ pip3 install -i https://pypi.anaconda.org/pypi/simple geocoder
 # https://github.com/thampiman/reverse-geocoder
 pip3 install reverse_geocoder
 deactivate
+
+apt-get clean
+apt-get autoremove -y
+rm -rf /var/lib/apt/lists/*

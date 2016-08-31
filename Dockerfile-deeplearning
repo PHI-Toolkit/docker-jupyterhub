@@ -1,0 +1,103 @@
+#
+# container: hermantolentino/docker-deeplearning:v1
+# To use this Docker container you should have installed its container dependencies:
+# 1. hermantolentino/docker-jupyterhub:v5
+# 2. hermantolentino/jupyterhub-packages:v1
+#
+FROM hermantolentino/jupyterhub-packages:v1
+
+MAINTAINER herman.tolentino@gmail.com
+
+USER root
+
+RUN \
+  DEBIAN_FRONTEND=noninteractive
+
+# Keras
+# url - https://github.com/fchollet/keras
+# docs - http://keras.io/
+# deep learning library using theano theano or tensorflow as the backend
+#
+# bcolz
+# url - https://github.com/Blosc/bcolz
+#
+# tensorflow
+# urls - (1) https://www.tensorflow.org/versions/r0.10/get_started/os_setup.html
+#        (2) https://github.com/aymericdamien/TensorFlow-Examples
+
+ENV LLVM_VERSION 3.8
+
+RUN \
+  wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key >> llvm-snapshot.gpg.key && \
+  apt-key add llvm-snapshot.gpg.key && \
+  add-apt-repository "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-${LLVM_VERSION} main" && \
+  apt-get update && \
+  apt-get install -y cython python-enum zlib1g zlib1g-dev \
+    libedit2 libedit-dev
+
+RUN \
+  apt-get install -y \
+    llvm-${LLVM_VERSION} llvm-${LLVM_VERSION}-dev clang-${LLVM_VERSION} lldb-${LLVM_VERSION} \
+    build-essential git libatlas-base-dev libopencv-dev \
+    libfftw3-dev
+
+RUN \
+  ln -s /usr/lib/llvm-${LLVM_VERSION}/bin/llvm-config /usr/bin/llvm-config && \
+  git clone https://github.com/numba/llvmlite.git
+
+ENV LLVM_CONFIG=/usr/lib/llvm-${LLVM_VERSION}/bin/llvm-config
+ENV TF2_BINARY_URL=https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.10.0rc0-cp27-none-linux_x86_64.whl
+ENV TF3_BINARY_URL=https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.10.0rc0-cp34-cp34m-linux_x86_64.whl
+
+RUN \
+  source /venv27/bin/activate && \
+  cd llvmlite && \
+  export LLVM_CONFIG=/usr/lib/llvm-${LLVM_VERSION}/bin/llvm-config && \
+  python setup.py install && \
+  cd .. && \
+  pip2 install enum34 funcsigs keras bcolz && \
+  export LLVM_CONFIG=/usr/bin/llvm-config && \
+  # LLVM_CONFIG=/usr/bin/llvm-config pip2 install llvmlite && \
+  LLVM_CONFIG=/usr/bin/llvm-config pip2 install numba && \
+  pip2 install --upgrade $TF2_BINARY_URL && \
+  deactivate
+
+RUN \
+  source /venv35/bin/activate && \
+  cd llvmlite && \
+  export LLVM_CONFIG=/usr/lib/llvm-${LLVM_VERSION}/bin/llvm-config && \
+  python setup.py install && \
+  cd .. && \
+  pip3 install enum34 funcsigs keras bcolz && \
+  export LLVM_CONFIG=/usr/bin/llvm-config && \
+  # LLVM_CONFIG=/usr/bin/llvm-config pip3 install llvmlite && \
+  LLVM_CONFIG=/usr/bin/llvm-config pip3 install numba && \
+  pip3 install --upgrade $TF3_BINARY_URL && \
+  deactivate
+
+# R deepnet, darch
+RUN \
+    R -e "install.packages(c('deepnet', 'darch'), lib='/usr/local/lib/R/site-library', repos='http://cran.rstudio.com/')"
+
+# R mxnet
+# http://mxnet.readthedocs.io/en/latest/how_to/build.html#building-on-ubuntu-debian
+RUN \
+    git clone --recursive https://github.com/dmlc/mxnet && \
+    cd mxnet; make -j$(nproc) && \
+    R -e "install.packages('devtools', lib='/usr/local/lib/R/site-library', repos = 'https://cran.rstudio.com')" && \
+    cd R-package && \
+    R -e "library(devtools); library(methods); options(repos=c(CRAN='https://cran.rstudio.com')); install_deps(dependencies = TRUE)" && \
+    cd .. && \
+    make rpkg && \
+    ln /dev/null /dev/raw1394 && \
+    R CMD INSTALL mxnet_0.7.tar.gz && \
+    echo "ln /dev/null /dev/raw1394" >> /etc/rc.local
+
+RUN \
+    apt-get clean && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /home/$NB_USER
+CMD \
+  ["/bin/bash"]
