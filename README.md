@@ -110,4 +110,4 @@ This container has a `notebooks` directory where there are sample notebooks inst
 
 Please read the docs to create a secure configuration for your JupyterHub server.
 
-If you want to run JupyterHub and use a folder on your computer that has your notebooks, ` cd ` to that folder and use: `$ docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 /bin/bash`. This will make your notebook folder visiable in the container folder `/home/jupyterhub/hostdir`.
+If you want to run JupyterHub and use a folder on your computer that has your notebooks, ` cd ` to that folder and use: `$ docker run -v $(pwd):/home/jupyterhub/hostdir -it -p 0.0.0.0:8000:8000 hermantolentino/jupyterhub:v5 /bin/bash`. This will make your notebook folder visible in the container folder `/home/jupyterhub/hostdir`.
