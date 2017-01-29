@@ -50,7 +50,7 @@ Follow these steps if you want to build the container from the Dockerfile from s
  > $ ./launch-jupyterhub.sh
  > ```
 
- Another launch script, launch-jupyterhub-neo4j.sh, launches a neo4j container which can be accesses from jupyter notebooks.
+ Another launch script, launch-jupyterhub-neo4j.sh, launches a neo4j container which can be accessed from jupyter notebooks.
 
 2. This will bring you to the docker container root prompt:
 > ```
